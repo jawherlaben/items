@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:4.4
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+    networks:
+      - my-network
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    image: ob-item-service:latest
+    container_name: ob-item-service-container
+    depends_on:
+      - mongo
+    ports:
+      - "8081:8081"
+    networks:
+      - my-network
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongo
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=itemdb
+
+networks:
+  my-network:
+
+volumes:
+  mongo-data:
